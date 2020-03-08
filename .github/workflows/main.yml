@@ -1,0 +1,47 @@
+name: Terraform Automated Testing
+
+on: 
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+    - name: 'Terraform Format All Files'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.19
+        tf_actions_subcommand: 'fmt'
+        tf_actions_working_dir: '.'
+    - name: 'Terraform Link'
+      run: echo 'to be implemented'
+    - name: 'Terraform Init Dev'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.19
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: './env/dev'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+    - name: 'Terraform Validate Dev'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.19
+        tf_actions_subcommand: 'validate'
+        tf_actions_working_dir: './env/dev'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+    - name: 'Terraform Plan Dev'
+      id: 'terraform_plan'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.19
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: './env/dev'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
